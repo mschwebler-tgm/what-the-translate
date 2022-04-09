@@ -1,0 +1,32 @@
+service: what-the-translate-backend
+frameworkVersion: '2'
+
+plugins:
+  - serverless-esbuild
+  - serverless-offline
+
+custom:
+  stackName: ${self:service}-${self:custom.stage}
+  stage: dev
+  esbuild:
+    bundle: true
+    minify: false
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: eu-central-1
+  logRetentionInDays: 5
+  versionFunctions: false
+  deploymentBucket:
+    name: what-the-translate-serverless-deployments-${self:custom.stage}
+  environment:
+    REGION: ${self:provider.region}
+
+functions:
+  translateAPI:
+    handler: src/lambda/translateApi.default
+    events:
+      - http:
+          path: /translate
+          method: GET
