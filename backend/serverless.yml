@@ -14,7 +14,7 @@ custom:
 
 provider:
   name: aws
-  runtime: nodejs14.x
+  runtime: nodejs12.x
   region: eu-central-1
   logRetentionInDays: 5
   versionFunctions: false

@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import ValidationError from '../errors/ValidationError';
 import { plainToInstance } from 'class-transformer';
