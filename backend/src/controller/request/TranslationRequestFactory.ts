@@ -3,10 +3,10 @@ import ValidationError from '../../errors/ValidationError';
 import AbstractTranslationRequest from './requests/AbstractTranslationRequest';
 import {ClassConstructor} from 'class-transformer';
 import SimpleTextTranslationRequest from './requests/SimpleTextTranslationRequest';
-import ChefkochTranslationRequest from './requests/ChefkochTranslationRequest';
+import RecipeTranslationRequest from './requests/RecipeTranslationRequest';
 import {transformAndValidateSync} from 'class-transformer-validator';
 
-const allTranslationTypes = ['simpleText', 'chefkoch'] as const;
+const allTranslationTypes = ['simpleText', 'recipe'] as const;
 type TranslationTypes = typeof allTranslationTypes; // readonly ['simpleText', 'chefkoch', ...]
 export type TranslationType = TranslationTypes[number];  // "simpleText" | "chefkoch" | ...
 
@@ -17,7 +17,7 @@ export default class TranslationRequestFactory {
 
     private readonly requestClassByType: Map<TranslationType, TranslationRequestClass> = new Map<TranslationType, TranslationRequestClass>([
         ['simpleText', SimpleTextTranslationRequest],
-        ['chefkoch', ChefkochTranslationRequest],
+        ['recipe', RecipeTranslationRequest],
     ]);
 
     parse(event: APIGatewayProxyEvent): AbstractTranslationRequest {
