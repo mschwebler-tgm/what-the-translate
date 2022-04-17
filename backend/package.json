@@ -2,15 +2,17 @@
   "name": "what-the-translate-backend",
   "version": "1.0.0",
   "description": "",
+  "author": "Matthias Schwebler",
+  "license": "ISC",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "serve": "dotenv -e ../.env serverless offline start",
     "deploy": "dotenv -e ../.env serverless deploy"
   },
   "dependencies": {
-    "class-transformer": "^0.4.0",
-    "class-transformer-validator": "^0.9.1",
-    "class-validator": "^0.13.1",
+    "class-transformer": "0.5.1",
+    "class-transformer-validator": "0.9.1",
+    "class-validator": "0.13.2",
     "inversify": "5.0.5",
     "typescript": "4.2.2"
   },
@@ -34,7 +36,5 @@
     "ts-loader": "8.0.17",
     "ts-mockery": "^1.2.0",
     "tslint": "~6.1.2"
-  },
-  "author": "Matthias Schwebler",
-  "license": "ISC"
+  }
 }
