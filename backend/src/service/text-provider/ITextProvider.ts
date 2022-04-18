@@ -1,3 +1,3 @@
-export default interface ITextProvider {
-    getTexts(): string[] | Promise<string[]>;
+export default interface ITextProvider<T = string> {
+    getTexts(): T | Promise<T>;
 }

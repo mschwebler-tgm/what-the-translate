@@ -7,7 +7,7 @@ export default class SimpleTextProvider implements ITextProvider {
         this.text = text;
     }
 
-    getTexts(): string[] {
-        return [this.text];
+    getTexts(): string {
+        return this.text;
     }
 }
