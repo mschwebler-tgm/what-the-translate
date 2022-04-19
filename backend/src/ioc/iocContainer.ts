@@ -5,8 +5,17 @@ import ChefkochRecipeProvider from '@service/text-provider/recipe-provider/Chefk
 import {TranslationType} from '@controller/request/TranslationRequestFactory';
 import SimpleTextTranslator from '@service/translator/SimpleTextTranslator';
 import RecipeTranslator from '@service/translator/RecipeTranslator';
+import GoogleTranslationProvider from '@service/translation-provider/GoogleTranslationProvider';
+import {Translate as GoogleTranslate} from '@google-cloud/translate/build/src/v2';
 
 const iocContainer = new Container();
+
+iocContainer.bind(SimpleTextTranslator).toSelf();
+iocContainer.bind(RecipeTranslator).toSelf();
+iocContainer.bind(bindings.TranslationProvider).toDynamicValue(() => {
+    const translate = new GoogleTranslate({projectId: process.env.GOOGLE_PROJECT_ID});
+    return new GoogleTranslationProvider(translate);
+});
 
 iocContainer.bind(bindings.RecipeProviderFactory).toFactory(() => {
     return (source: RecipeSource) => {
@@ -20,17 +29,18 @@ iocContainer.bind(bindings.RecipeProviderFactory).toFactory(() => {
         return new providerClass();
     }
 });
-iocContainer.bind(bindings.TextTranslatorFactory).toFactory(() => {
+iocContainer.bind(bindings.TextTranslatorFactory).toFactory((context) => {
     return (type: TranslationType) => {
-        const translatorClass = {
-            simpleText: SimpleTextTranslator,
-            recipe: RecipeTranslator,
-        }[type];
-        if (!translatorClass) {
+        const textTranslatorFactoryByType = {
+            simpleText: () => context.container.get(SimpleTextTranslator),
+            recipe: () => context.container.get(RecipeTranslator),
+        };
+        const textTranslatorFactory = textTranslatorFactoryByType[type];
+        if (!textTranslatorFactory) {
             throw new Error(`Cannot find translator for type "${type}"`);
         }
 
-        return new translatorClass();
+        return textTranslatorFactory();
     }
 });
 

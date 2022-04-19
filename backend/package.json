@@ -10,6 +10,7 @@
     "deploy": "dotenv -e ../.env serverless deploy"
   },
   "dependencies": {
+    "@google-cloud/translate": "^6.3.1",
     "class-transformer": "0.5.1",
     "class-transformer-validator": "0.9.1",
     "class-validator": "0.13.2",

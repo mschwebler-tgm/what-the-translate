@@ -3,3 +3,4 @@
 /.idea/
 /backend/.esbuild/
 /backend/node_modules/
+/backend/google-api-key.json
