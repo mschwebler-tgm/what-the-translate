@@ -19,7 +19,6 @@ export default class ChefkochRecipeProvider implements IRecipeProvider {
         return {
             ingredients,
             description,
-            language: { code: 'de', name: 'German' },
         };
     }
 

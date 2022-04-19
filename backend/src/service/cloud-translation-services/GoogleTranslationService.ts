@@ -10,8 +10,8 @@ export default class GoogleTranslationService implements ITranslationService {
         this.translator = translator;
     }
 
-    async translate(text: string, targetLanguages: string[]): Promise<string> {
-        const [result] = await this.translator.translate(text, 'ru');  // TODO use lang parameter
+    async translate(text: string, targetLanguages: string): Promise<string> {
+        const [result] = await this.translator.translate(text, targetLanguages);
         return result;
     }
 

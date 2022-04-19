@@ -8,11 +8,11 @@ export default class AwsTranslationService implements ITranslationService {
         this.translator = translator;
     }
 
-    async translate(text: string, targetLanguages: string[]): Promise<string> {
+    async translate(text: string, targetLanguage: string): Promise<string> {
         const result = await this.translator.translateText({
             Text: text,
             SourceLanguageCode: 'de',
-            TargetLanguageCode: 'en',
+            TargetLanguageCode: targetLanguage,
             Settings: {
                 Formality: 'FORMAL',
             },

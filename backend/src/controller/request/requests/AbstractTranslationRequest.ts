@@ -1,6 +1,6 @@
 import {IsOptional, IsString} from 'class-validator';
-import {TranslationType} from '../TranslationRequestFactory';
-import ITextProvider from '../../../service/text-provider/ITextProvider';
+import {TranslationType} from '@controller/request/TranslationRequestFactory';
+import ITextProvider from '@service/text-provider/ITextProvider';
 
 export default abstract class AbstractTranslationRequest {
     type!: TranslationType;

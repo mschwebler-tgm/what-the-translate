@@ -5,14 +5,14 @@ import bindings from '@ioc/bindings';
 
 @injectable()
 export default class SimpleTextTranslator implements ITextTranslator<string> {
-    private readonly translationProvider: ITranslationService;
+    private readonly translationService: ITranslationService;
 
-    constructor(@inject(bindings.TranslationService) translationProvider: ITranslationService) {
-        this.translationProvider = translationProvider;
+    constructor(@inject(bindings.TranslationService) translationService: ITranslationService) {
+        this.translationService = translationService;
     }
 
     async translate(input: string, targetLanguages: string[]): Promise<string> {
-        const translation = await this.translationProvider.translate(input, ['ru']);
+        const translation = await this.translationService.translate(input, targetLanguages[0]);
         console.log(`Text: ${input}`);
         console.log(`Translation: ${translation}`);
 

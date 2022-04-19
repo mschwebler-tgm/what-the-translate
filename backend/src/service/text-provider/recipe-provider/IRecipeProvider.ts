@@ -6,7 +6,6 @@ export type Ingredient = {
 export type Recipe = {
     ingredients: Ingredient[];
     description: string;
-    language: { code: string, name: string };
 }
 
 export default interface IRecipeProvider {
