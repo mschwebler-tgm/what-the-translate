@@ -1,9 +1,9 @@
-import ITranslationProvider from '@service/translation-provider/ITranslationProvider';
+import ITranslationService from '@service/cloud-translation-services/ITranslationService';
 import {injectable} from 'inversify';
 import {Translate} from '@google-cloud/translate/build/src/v2';
 
 @injectable()
-export default class GoogleTranslationProvider implements ITranslationProvider {
+export default class GoogleTranslationService implements ITranslationService {
     private readonly translator: Translate;
 
     constructor(translator: Translate) {

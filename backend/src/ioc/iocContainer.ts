@@ -5,16 +5,16 @@ import ChefkochRecipeProvider from '@service/text-provider/recipe-provider/Chefk
 import {TranslationType} from '@controller/request/TranslationRequestFactory';
 import SimpleTextTranslator from '@service/translator/SimpleTextTranslator';
 import RecipeTranslator from '@service/translator/RecipeTranslator';
-import GoogleTranslationProvider from '@service/translation-provider/GoogleTranslationProvider';
+import GoogleTranslationService from '@service/cloud-translation-services/GoogleTranslationService';
 import {Translate as GoogleTranslate} from '@google-cloud/translate/build/src/v2';
 
 const iocContainer = new Container();
 
 iocContainer.bind(SimpleTextTranslator).toSelf();
 iocContainer.bind(RecipeTranslator).toSelf();
-iocContainer.bind(bindings.TranslationProvider).toDynamicValue(() => {
+iocContainer.bind(bindings.TranslationService).toDynamicValue(() => {
     const translate = new GoogleTranslate({projectId: process.env.GOOGLE_PROJECT_ID});
-    return new GoogleTranslationProvider(translate);
+    return new GoogleTranslationService(translate);
 });
 
 iocContainer.bind(bindings.RecipeProviderFactory).toFactory(() => {

@@ -1,13 +1,13 @@
 import ITextTranslator from '@service/translator/ITextTranslator';
-import ITranslationProvider from '@service/translation-provider/ITranslationProvider';
+import ITranslationService from '@service/cloud-translation-services/ITranslationService';
 import {inject, injectable} from 'inversify';
 import bindings from '@ioc/bindings';
 
 @injectable()
 export default class SimpleTextTranslator implements ITextTranslator<string> {
-    private readonly translationProvider: ITranslationProvider;
+    private readonly translationProvider: ITranslationService;
 
-    constructor(@inject(bindings.TranslationProvider) translationProvider: ITranslationProvider) {
+    constructor(@inject(bindings.TranslationService) translationProvider: ITranslationService) {
         this.translationProvider = translationProvider;
     }
 

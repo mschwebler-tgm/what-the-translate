@@ -1,3 +1,3 @@
-export default interface ITranslationProvider {
+export default interface ITranslationService {
     translate(text: string, targetLanguages: string[]): Promise<string>;
 }

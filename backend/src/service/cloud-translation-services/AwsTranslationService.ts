@@ -1,7 +1,7 @@
-import ITranslationProvider from '@service/translation-provider/ITranslationProvider';
+import ITranslationService from '@service/cloud-translation-services/ITranslationService';
 import {Translate} from 'aws-sdk';
 
-export default class AwsTranslationProvider implements ITranslationProvider {
+export default class AwsTranslationService implements ITranslationService {
     private readonly translator: Translate;
 
     constructor(translator: Translate) {

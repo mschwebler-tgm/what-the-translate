@@ -1,5 +1,5 @@
 export default {
     RecipeProviderFactory: Symbol.for('RecipeProviderFactory'),
     TextTranslatorFactory: Symbol.for('TextTranslatorFactory'),
-    TranslationProvider: Symbol.for('TranslationProvider'),
+    TranslationService: Symbol.for('TranslationProvider'),
 }
