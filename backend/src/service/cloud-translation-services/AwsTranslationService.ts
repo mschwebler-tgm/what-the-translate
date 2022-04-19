@@ -8,10 +8,13 @@ export default class AwsTranslationService implements ITranslationService {
         this.translator = translator;
     }
 
-    async translate(text: string, targetLanguage: string): Promise<string> {
+    async translate(text: string, targetLanguage: string, sourceLanguage: string): Promise<string> {
+        if (!text) {
+            return text;
+        }
         const result = await this.translator.translateText({
             Text: text,
-            SourceLanguageCode: 'de',
+            SourceLanguageCode: sourceLanguage,
             TargetLanguageCode: targetLanguage,
             Settings: {
                 Formality: 'FORMAL',
