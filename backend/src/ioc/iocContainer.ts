@@ -7,14 +7,22 @@ import SimpleTextTranslator from '@service/translator/SimpleTextTranslator';
 import RecipeTranslator from '@service/translator/RecipeTranslator';
 import GoogleTranslationService from '@service/cloud-translation-services/GoogleTranslationService';
 import {Translate as GoogleTranslate} from '@google-cloud/translate/build/src/v2';
+import {Translate as AwsTranslate} from 'aws-sdk';
+import AwsTranslationService from '@service/cloud-translation-services/AwsTranslationService';
 
 const iocContainer = new Container();
 
 iocContainer.bind(SimpleTextTranslator).toSelf();
 iocContainer.bind(RecipeTranslator).toSelf();
 iocContainer.bind(bindings.TranslationService).toDynamicValue(() => {
-    const translate = new GoogleTranslate({projectId: process.env.GOOGLE_PROJECT_ID});
-    return new GoogleTranslationService(translate);
+    if (process.env.DEFAULT_TRANSLATION_SERVICE === 'google') {
+        const translator = new GoogleTranslate({projectId: process.env.GOOGLE_PROJECT_ID});
+        return new GoogleTranslationService(translator);
+    } else if (process.env.DEFAULT_TRANSLATION_SERVICE === 'aws') {
+        const translator = new AwsTranslate();
+        return new AwsTranslationService(translator);
+    }
+    throw new Error(`Cannot resolve translation service: "${process.env.DEFAULT_TRANSLATION_SERVICE}"`)
 });
 
 iocContainer.bind(bindings.RecipeProviderFactory).toFactory(() => {
