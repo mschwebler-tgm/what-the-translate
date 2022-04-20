@@ -11,8 +11,8 @@ export default class SimpleTextTranslator implements ITextTranslator<string> {
         this.translationService = translationService;
     }
 
-    async translate(input: string, targetLanguages: string[]): Promise<string> {
-        const translation = await this.translationService.translate(input, targetLanguages[0]);
+    async translate(input: string, sourceLanguage: string, targetLanguages: string[]): Promise<string> {
+        const translation = await this.translationService.translate(input, sourceLanguage, targetLanguages[0]);
         console.log(`Text: ${input}`);
         console.log(`Translation: ${translation}`);
 

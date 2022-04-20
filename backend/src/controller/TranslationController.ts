@@ -11,6 +11,7 @@ export default class TranslationController {
   async translate(request: AbstractTranslationRequest): Promise<any> {
     return this.translationService.translate(
         request.type,
+        request.sourceLanguageCode,
         request.getTextProvider(),
         request.getTargetLanguages(),
     );
