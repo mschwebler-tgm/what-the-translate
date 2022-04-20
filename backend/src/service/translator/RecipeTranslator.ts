@@ -1,33 +1,15 @@
-import ITextTranslator from '@service/translator/ITextTranslator';
-import {Ingredient, Recipe} from '@service/text-provider/recipe-provider/IRecipeProvider';
-import {inject, injectable} from 'inversify';
-import bindings from '@ioc/bindings';
-import ITranslationService from '@service/cloud-translation-services/ITranslationService';
+import AbstractTextTranslator from '@service/translator/AbstractTextTranslator';
+import {Recipe} from '@service/text-provider/recipe-provider/IRecipeProvider';
+import {injectable} from 'inversify';
 
 @injectable()
-export default class RecipeTranslator implements ITextTranslator<Recipe> {
-    private readonly translationService: ITranslationService;
-
-    constructor(@inject(bindings.TranslationService) translationService: ITranslationService) {
-        this.translationService = translationService;
-    }
+export default class RecipeTranslator extends AbstractTextTranslator<Recipe> {
 
     async translate(sourceRecipe: Recipe, sourceLanguage: string, targetLanguages: string[]): Promise<Recipe> {
         let recipe = sourceRecipe;
-        const languages = [sourceLanguage, ...targetLanguages, sourceLanguage];
-        for (let i = 1; i < languages.length; i++) {
-            const sourceLanguage = languages[i-1];
-            const targetLanguage = languages[i];
-
-            const translatedIngredientsPromises: Promise<[string, string]>[] = [];
-            const translatedDescriptionPromise = await this.translationService.translate(recipe.description, sourceLanguage, targetLanguage);
-            for (const ingredient of recipe.ingredients) {
-                const translatedIngredient = Promise.all([
-                    this.translationService.translate(ingredient.amount, sourceLanguage, targetLanguage),
-                    this.translationService.translate(ingredient.name, sourceLanguage, targetLanguage),
-                ]);
-                translatedIngredientsPromises.push(translatedIngredient);
-            }
+        await this.cycleThroughLanguages(sourceLanguage, targetLanguages, async (sourceLanguage: string, targetLanguage: string) => {
+            const translatedDescriptionPromise = this.translateDescription(recipe, sourceLanguage, targetLanguage);
+            const translatedIngredientsPromises = this.translateIngredients(recipe, sourceLanguage, targetLanguage);
 
             const [translatedIngredients, translatedDescription] = await Promise.all([
                 Promise.all(translatedIngredientsPromises),
@@ -35,14 +17,29 @@ export default class RecipeTranslator implements ITextTranslator<Recipe> {
             ]);
 
             recipe = {
+                description: translatedDescription,
                 ingredients: translatedIngredients.map(([amount, name]) => ({
                     amount,
                     name,
                 })),
-                description: translatedDescription,
             };
-        }
+        });
 
         return recipe;
+    }
+
+    private async translateDescription(recipe: Recipe, sourceLanguage: string, targetLanguage: string): Promise<string> {
+        return this.translationService.translate(recipe.description, sourceLanguage, targetLanguage);
+    }
+
+    private translateIngredients(recipe: Recipe, sourceLanguage: string, targetLanguage: string): Promise<[string, string]>[] {
+        const translatedIngredientsPromises: Promise<[string, string]>[] = [];
+        for (const ingredient of recipe.ingredients) {
+            translatedIngredientsPromises.push(Promise.all([
+                this.translationService.translate(ingredient.amount, sourceLanguage, targetLanguage),
+                this.translationService.translate(ingredient.name, sourceLanguage, targetLanguage),
+            ]));
+        }
+        return translatedIngredientsPromises;
     }
 }

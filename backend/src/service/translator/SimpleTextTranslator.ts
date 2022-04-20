@@ -1,20 +1,13 @@
-import ITextTranslator from '@service/translator/ITextTranslator';
-import ITranslationService from '@service/cloud-translation-services/ITranslationService';
-import {inject, injectable} from 'inversify';
-import bindings from '@ioc/bindings';
+import AbstractTextTranslator from '@service/translator/AbstractTextTranslator';
+import {injectable} from 'inversify';
 
 @injectable()
-export default class SimpleTextTranslator implements ITextTranslator<string> {
-    private readonly translationService: ITranslationService;
-
-    constructor(@inject(bindings.TranslationService) translationService: ITranslationService) {
-        this.translationService = translationService;
-    }
-
+export default class SimpleTextTranslator extends AbstractTextTranslator<string> {
     async translate(input: string, sourceLanguage: string, targetLanguages: string[]): Promise<string> {
-        const translation = await this.translationService.translate(input, sourceLanguage, targetLanguages[0]);
-        console.log(`Text: ${input}`);
-        console.log(`Translation: ${translation}`);
+        let translation = input;
+        await this.cycleThroughLanguages(sourceLanguage, targetLanguages, async (sourceLanguage, targetLanguage) => {
+            translation = await this.translationService.translate(translation, sourceLanguage, targetLanguage);
+        });
 
         return translation;
     }
