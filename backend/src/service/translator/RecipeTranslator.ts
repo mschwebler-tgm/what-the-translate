@@ -19,17 +19,26 @@ export default class RecipeTranslator implements ITextTranslator<Recipe> {
             const sourceLanguage = languages[i-1];
             const targetLanguage = languages[i];
 
-            const translatedIngredients: Ingredient[] = [];
-            const translatedDescription = await this.translationService.translate(recipe.description, targetLanguage, sourceLanguage);
+            const translatedIngredientsPromises: Promise<[string, string]>[] = [];
+            const translatedDescriptionPromise = await this.translationService.translate(recipe.description, targetLanguage, sourceLanguage);
             for (const ingredient of recipe.ingredients) {
-                translatedIngredients.push({
-                    amount: await this.translationService.translate(ingredient.amount, targetLanguage, sourceLanguage),
-                    name: await this.translationService.translate(ingredient.name, targetLanguage, sourceLanguage),
-                });
+                const translatedIngredient = Promise.all([
+                    this.translationService.translate(ingredient.amount, targetLanguage, sourceLanguage),
+                    this.translationService.translate(ingredient.name, targetLanguage, sourceLanguage),
+                ]);
+                translatedIngredientsPromises.push(translatedIngredient);
             }
 
+            const [translatedIngredients, translatedDescription] = await Promise.all([
+                Promise.all(translatedIngredientsPromises),
+                translatedDescriptionPromise,
+            ]);
+
             recipe = {
-                ingredients: translatedIngredients,
+                ingredients: translatedIngredients.map(([amount, name]) => ({
+                    amount,
+                    name,
+                })),
                 description: translatedDescription,
             };
         }
