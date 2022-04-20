@@ -5,7 +5,7 @@ import bindings from '@ioc/bindings';
 import ITextTranslator from '@service/translator/ITextTranslator';
 
 export default class TranslationService {
-    async translate(type: TranslationType, textProvider: ITextProvider, targetLanguages: string[]) {
+    async translate(type: TranslationType, textProvider: ITextProvider<unknown>, targetLanguages: string[]) {
         const translator = iocContainer.get<(type: TranslationType) => ITextTranslator<unknown>>(bindings.TextTranslatorFactory)(type);
         return translator.translate(await textProvider.getTexts(), targetLanguages);
     }

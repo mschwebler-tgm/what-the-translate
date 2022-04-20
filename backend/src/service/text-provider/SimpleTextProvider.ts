@@ -1,6 +1,6 @@
 import ITextProvider from './ITextProvider';
 
-export default class SimpleTextProvider implements ITextProvider {
+export default class SimpleTextProvider implements ITextProvider<string> {
     private readonly text: string;
 
     constructor(text: string) {
