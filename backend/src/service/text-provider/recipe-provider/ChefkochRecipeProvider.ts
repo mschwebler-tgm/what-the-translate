@@ -49,7 +49,7 @@ export default class ChefkochRecipeProvider implements IRecipeProvider {
     }
 
     private trimInnerText(text: string): string {
-        return text.replace(/\n/g, '').replace(/ /, '');
+        return text.replace(/\n/g, '').replace(/ /g, '');
     }
 
     private parseDescription(recipeDocument: HTMLElement): string {
