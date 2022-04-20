@@ -29,7 +29,6 @@ export default class ChefkochRecipeProvider implements IRecipeProvider {
     }
 
     private parseIngredients(recipeDocument: HTMLElement) {
-        console.log(recipeDocument.querySelectorAll('.ingredients.table-header'));
         const ingredientsTable = recipeDocument.querySelectorAll('.ingredients.table-header')[0];
         if (!ingredientsTable) {
             throw new Error('Couldn\'t find ingredients table');
