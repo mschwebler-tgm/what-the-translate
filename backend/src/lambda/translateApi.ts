@@ -24,7 +24,7 @@ export default async function translateApi(event: APIGatewayProxyEvent): Promise
     }
     return {
       statusCode: 500,
-      body: 'Unknown error',
-    }
+      body: JSON.stringify({messsage: 'Unknown error'}),
+    };
   }
 }
