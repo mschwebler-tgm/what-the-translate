@@ -2,6 +2,7 @@ import AbstractTranslationRequest from './AbstractTranslationRequest';
 import ITextProvider from '@service/text-provider/ITextProvider';
 import {IsDefined, IsIn, IsString, IsUrl} from 'class-validator';
 import RecipeTextProvider from '@service/text-provider/RecipeTextProvider';
+import {Recipe} from '@service/text-provider/recipe-provider/IRecipeProvider';
 
 const allSources = ['chefkoch'] as const;
 type RecipeSources = typeof allSources; // readonly ['chefkoch', ...]
@@ -19,7 +20,7 @@ export default class RecipeTranslationRequest extends AbstractTranslationRequest
     @IsUrl({}, {message: 'url must be a valid URL'})
     url!: string;
 
-    getTextProvider(): ITextProvider {
+    getTextProvider(): ITextProvider<Recipe> {
         return new RecipeTextProvider(this.source, this.url);
     }
 

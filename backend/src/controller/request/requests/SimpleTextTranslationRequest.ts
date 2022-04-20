@@ -8,7 +8,7 @@ export default class SimpleTextTranslationRequest extends AbstractTranslationReq
     @IsString({message: 'text must be of type string'})
     text!: string;
 
-    getTextProvider(): ITextProvider {
+    getTextProvider(): ITextProvider<string> {
         return new SimpleTextProvider(this.text);
     }
 }
