@@ -28,23 +28,27 @@ export default class ChefkochRecipeProvider implements IRecipeProvider {
         return parse(recipePageHtml);
     }
 
-    private parseIngredients(recipeDocument: HTMLElement) {
-        const ingredientsTable = recipeDocument.querySelectorAll('.ingredients.table-header')[0];
-        if (!ingredientsTable) {
-            throw new Error('Couldn\'t find ingredients table');
+    private parseIngredients(recipeDocument: HTMLElement): Ingredient[] {
+        const ingredients: Ingredient[] = [];
+        const ingredientTables = recipeDocument.querySelectorAll('.ingredients.table-header');
+        if (ingredientTables.length === 0) {
+            throw new Error('Couldn\'t find ingredients table(s)');
         }
-        const ingredientRows = ingredientsTable.getElementsByTagName('tr');
-
-        return [...ingredientRows].map((row): Ingredient => {
-            const spans = row.getElementsByTagName('span');
-            if (spans.length !== 2) {
-                throw new Error(`Expected 2 "span" elements in ingredients row. Received ${spans.length}`);
-            }
-            return {
-                amount: this.trimInnerText(spans[0].innerText),
-                name: this.trimInnerText(spans[1].innerText),
-            };
+        ingredientTables.forEach(ingredientTable => {
+            const ingredientRows = ingredientTable.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            ingredientRows.forEach((row) => {
+                const rowCells = row.getElementsByTagName('td');
+                if (rowCells.length !== 2) {
+                    throw new Error(`Expected 2 "td" elements in ingredients row. Received ${rowCells.length}`);
+                }
+                ingredients.push({
+                    amount: this.trimInnerText(rowCells[0].innerText),
+                    name: this.trimInnerText(rowCells[1].innerText),
+                });
+            });
         });
+
+        return ingredients;
     }
 
     private trimInnerText(text: string): string {
