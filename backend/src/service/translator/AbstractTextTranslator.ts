@@ -10,7 +10,7 @@ export default abstract class AbstractTextTranslator<T> {
         this.translationService = translationService;
     }
 
-    abstract translate(input: T, sourceLanguage: string, targetLanguages: string[]): Promise<T>;
+    abstract translate(input: T, sourceLanguage: string, targetLanguageCodes: string[]): Promise<T>;
 
     protected async cycleThroughLanguages(
         sourceLanguage: string,

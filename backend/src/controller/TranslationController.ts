@@ -13,7 +13,7 @@ export default class TranslationController {
         request.type,
         request.sourceLanguageCode,
         request.getTextProvider(),
-        request.getTargetLanguages(),
+        request.getTargetLanguageCodes(),
     );
   }
 }

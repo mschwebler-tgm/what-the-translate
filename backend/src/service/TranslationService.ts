@@ -9,13 +9,13 @@ export default class TranslationService {
         type: TranslationType,
         sourceLanguageCode: string,
         textProvider: ITextProvider<unknown>,
-        targetLanguages: string[],
+        targetLanguageCodes: string[],
     ) {
         const translator = this.getTranslator(type);
         return translator.translate(
             await textProvider.getTexts(),
             sourceLanguageCode,
-            targetLanguages,
+            targetLanguageCodes,
         );
     }
 

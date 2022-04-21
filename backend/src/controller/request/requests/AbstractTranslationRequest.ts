@@ -10,10 +10,10 @@ export default abstract class AbstractTranslationRequest {
 
     @IsOptional()
     @IsString({each: true})
-    protected targetLanguages?: string[];
+    protected targetLanguageCodes?: string[];
 
-    getTargetLanguages(): string[] {
-        return this.targetLanguages || [];
+    getTargetLanguageCodes(): string[] {
+        return this.targetLanguageCodes || [];
     }
 
     abstract getTextProvider(): ITextProvider<unknown>;

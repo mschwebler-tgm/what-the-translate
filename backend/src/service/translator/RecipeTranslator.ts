@@ -5,9 +5,9 @@ import {injectable} from 'inversify';
 @injectable()
 export default class RecipeTranslator extends AbstractTextTranslator<Recipe> {
 
-    async translate(sourceRecipe: Recipe, sourceLanguage: string, targetLanguages: string[]): Promise<Recipe> {
+    async translate(sourceRecipe: Recipe, sourceLanguage: string, targetLanguageCodes: string[]): Promise<Recipe> {
         let recipe = sourceRecipe;
-        await this.cycleThroughLanguages(sourceLanguage, targetLanguages, async (sourceLanguage: string, targetLanguage: string) => {
+        await this.cycleThroughLanguages(sourceLanguage, targetLanguageCodes, async (sourceLanguage: string, targetLanguage: string) => {
             const translatedDescriptionPromise = this.translateDescription(recipe, sourceLanguage, targetLanguage);
             const translatedIngredientsPromises = this.translateIngredients(recipe, sourceLanguage, targetLanguage);
 
