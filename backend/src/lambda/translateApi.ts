@@ -2,8 +2,8 @@ import 'reflect-metadata';
 import {APIGatewayProxyEvent, APIGatewayProxyResult} from 'aws-lambda';
 import TranslationRequestFactory from '@controller/request/TranslationRequestFactory';
 import TranslationController from '@controller/TranslationController';
-import ValidationError from '@errors/ValidationError';
 import TranslationService from '@service/TranslationService';
+import ReportableError from '@errors/ReportableError';
 
 export default async function translateApi(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   try {
@@ -19,7 +19,7 @@ export default async function translateApi(event: APIGatewayProxyEvent): Promise
     };
   } catch (error) {
     console.error(error);
-    if (error instanceof ValidationError) {
+    if (error instanceof ReportableError) {
       return error.toAPIGatewayProxyResult();
     }
     return {
