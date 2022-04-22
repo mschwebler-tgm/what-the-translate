@@ -11,6 +11,9 @@ custom:
   esbuild:
     bundle: true
     minify: false
+    exclude:
+      - aws-sdk
+  translationsBucketName: ${self:custom.stackName}-translations
 
 provider:
   name: aws
@@ -23,6 +26,7 @@ provider:
   environment:
     REGION: ${self:provider.region}
     DEFAULT_TRANSLATION_SERVICE: aws
+    TRANSLATION_BUCKET_NAME: ${self:custom.translationsBucketName}
   iam:
     role:
       statements:
@@ -31,12 +35,50 @@ provider:
             - "translate:TranslateText"
           Resource:
             - '*'
+        - Effect: Allow
+          Action:
+            - "s3:putObject"
+          Resource:
+            - Fn::Join:
+                - ''
+                - - !GetAtt TranslationsBucket.Arn
+                  - '/*'
+        - Effect: Allow
+          Action:
+            - "s3:getObject"
+          Resource:
+            - Fn::Join:
+                - ''
+                - - !GetAtt TranslationsBucket.Arn
+                  - '/*'
+        - Effect: Allow
+          Action:
+            - "s3:deleteObject"
+          Resource:
+            - Fn::Join:
+                - ''
+                - - !GetAtt TranslationsBucket.Arn
+                  - '/IN_PROGRESS/*'
 
 functions:
-  translateAPI:
-    handler: src/lambda/translateApi.default
-    timeout: 30
+  startTranslation:
+    handler: src/lambda/startTranslation.default
     events:
       - http:
           path: /translate
           method: POST
+  s3TranslationHook:
+    handler: src/lambda/s3TranslationHook.default
+    timeout: 30
+    events:
+      - s3:
+          bucket: ${self:custom.translationsBucketName}
+          event: s3:ObjectCreated:Put
+          existing: true
+
+resources:
+  Resources:
+    TranslationsBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.translationsBucketName}

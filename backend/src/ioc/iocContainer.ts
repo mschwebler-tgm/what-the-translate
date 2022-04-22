@@ -9,11 +9,19 @@ import GoogleTranslationService from '@service/cloud-translation-services/Google
 import {Translate as GoogleTranslate} from '@google-cloud/translate/build/src/v2';
 import {Translate as AwsTranslate} from 'aws-sdk';
 import AwsTranslationService from '@service/cloud-translation-services/AwsTranslationService';
+import S3TranslationRepository from '../persistence/s3/S3TranslationRepository';
+import TranslationService from '@service/TranslationService';
+import TranslationController from '@controller/TranslationController';
+import {S3} from 'aws-sdk';
 
 const iocContainer = new Container();
 
 iocContainer.bind(SimpleTextTranslator).toSelf();
 iocContainer.bind(RecipeTranslator).toSelf();
+iocContainer.bind(TranslationService).toSelf();
+iocContainer.bind(TranslationController).toSelf();
+iocContainer.bind(S3TranslationRepository).toDynamicValue(() => new S3TranslationRepository(new S3()));
+iocContainer.bind(bindings.TranslationRepository).toDynamicValue(context => context.container.get(S3TranslationRepository));
 iocContainer.bind(bindings.TranslationService).toDynamicValue(() => {
     if (process.env.DEFAULT_TRANSLATION_SERVICE === 'google') {
         const translator = new GoogleTranslate({projectId: process.env.GOOGLE_PROJECT_ID});

@@ -5,27 +5,22 @@ import {injectable} from 'inversify';
 @injectable()
 export default class RecipeTranslator extends AbstractTextTranslator<Recipe> {
 
-    async translate(sourceRecipe: Recipe, sourceLanguage: string, targetLanguageCodes: string[]): Promise<Recipe> {
-        let recipe = sourceRecipe;
-        await this.cycleThroughLanguages(sourceLanguage, targetLanguageCodes, async (sourceLanguage: string, targetLanguage: string) => {
-            const translatedDescriptionPromise = this.translateDescription(recipe, sourceLanguage, targetLanguage);
-            const translatedIngredientsPromises = this.translateIngredients(recipe, sourceLanguage, targetLanguage);
+    async translate(sourceRecipe: Recipe, sourceLanguage: string, targetLanguage: string): Promise<Recipe> {
+        const translatedDescriptionPromise = this.translateDescription(sourceRecipe, sourceLanguage, targetLanguage);
+        const translatedIngredientsPromises = this.translateIngredients(sourceRecipe, sourceLanguage, targetLanguage);
 
-            const [translatedIngredients, translatedDescription] = await Promise.all([
-                Promise.all(translatedIngredientsPromises),
-                translatedDescriptionPromise,
-            ]);
+        const [translatedIngredients, translatedDescription] = await Promise.all([
+            Promise.all(translatedIngredientsPromises),
+            translatedDescriptionPromise,
+        ]);
 
-            recipe = {
-                description: translatedDescription,
-                ingredients: translatedIngredients.map(([amount, name]) => ({
-                    amount,
-                    name,
-                })),
-            };
-        });
-
-        return recipe;
+        return {
+            description: translatedDescription,
+            ingredients: translatedIngredients.map(([amount, name]) => ({
+                amount,
+                name,
+            })),
+        };
     }
 
     private async translateDescription(recipe: Recipe, sourceLanguage: string, targetLanguage: string): Promise<string> {

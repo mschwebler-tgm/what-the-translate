@@ -10,18 +10,5 @@ export default abstract class AbstractTextTranslator<T> {
         this.translationService = translationService;
     }
 
-    abstract translate(input: T, sourceLanguage: string, targetLanguageCodes: string[]): Promise<T>;
-
-    protected async cycleThroughLanguages(
-        sourceLanguage: string,
-        targetLanguages: string[],
-        callback: (sourceLanguage: string, targetLanguage: string) => Promise<void>
-    ): Promise<void> {
-        const languages = [sourceLanguage, ...targetLanguages, sourceLanguage];
-        for (let i = 1; i < languages.length; i++) {
-            const sourceLanguage = languages[i-1];
-            const targetLanguage = languages[i];
-            await callback(sourceLanguage, targetLanguage);
-        }
-    }
+    abstract translate(input: T, sourceLanguage: string, targetLanguage: string): Promise<T>;
 }
