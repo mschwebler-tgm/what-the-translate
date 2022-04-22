@@ -22,10 +22,20 @@ provider:
     name: what-the-translate-serverless-deployments-${self:custom.stage}
   environment:
     REGION: ${self:provider.region}
+    DEFAULT_TRANSLATION_SERVICE: aws
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - "translate:TranslateText"
+          Resource:
+            - '*'
 
 functions:
   translateAPI:
     handler: src/lambda/translateApi.default
+    timeout: 30
     events:
       - http:
           path: /translate
