@@ -24,14 +24,11 @@ export default class AwsTranslationService implements ITranslationService {
         }
     }
 
-    private async translateText(text: string, sourceLanguage: string, targetLanguage: string) {
+    private async translateText(text: string, sourceLanguage: string, targetLanguage: string): Promise<string> {
         const result = await this.translator.translateText({
             Text: text,
             SourceLanguageCode: sourceLanguage,
             TargetLanguageCode: targetLanguage,
-            Settings: {
-                Formality: 'FORMAL',
-            },
         }).promise();
 
         return result.TranslatedText;
